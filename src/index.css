@@ -5,8 +5,59 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    /* Dark fintech theme — deep navy with mint & coral */
+  /* LIGHT MODE — same mint + coral palette on a soft off-white surface */
+  :root,
+  .light {
+    --background: 200 40% 95%;
+    --foreground: 222 40% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 35% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 35% 12%;
+
+    --primary: 158 70% 40%;          /* mint green (darker for contrast on light) */
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 158 80% 55%;
+
+    --secondary: 210 25% 94%;
+    --secondary-foreground: 222 35% 15%;
+
+    --muted: 210 25% 94%;
+    --muted-foreground: 220 10% 40%;
+
+    --accent: 14 85% 55%;            /* coral */
+    --accent-foreground: 0 0% 100%;
+
+    --warning: 35 95% 50%;           /* amber */
+    --warning-foreground: 0 0% 100%;
+
+    --success: 158 70% 40%;
+    --danger: 358 75% 55%;
+
+    --destructive: 358 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 88%;
+    --input: 220 15% 90%;
+    --ring: 158 70% 40%;
+
+    --radius: 1rem;
+
+    --gradient-primary: linear-gradient(135deg, hsl(158 70% 40%), hsl(180 70% 45%));
+    --gradient-accent: linear-gradient(135deg, hsl(14 85% 55%), hsl(340 80% 60%));
+    --gradient-surface: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 30% 97%));
+    --gradient-glow: radial-gradient(circle at 30% 0%, hsl(158 70% 50% / 0.10), transparent 60%);
+
+    --shadow-card: 0 10px 30px -12px hsl(222 30% 30% / 0.12), inset 0 1px 0 0 hsl(0 0% 100% / 0.6);
+    --shadow-glow: 0 0 60px -10px hsl(158 80% 50% / 0.25);
+
+    --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* DARK MODE — original deep navy fintech palette */
+  .dark {
     --background: 222 30% 7%;
     --foreground: 180 15% 95%;
 
@@ -16,7 +67,7 @@
     --popover: 222 28% 10%;
     --popover-foreground: 180 15% 95%;
 
-    --primary: 158 75% 55%;          /* mint green */
+    --primary: 158 75% 55%;
     --primary-foreground: 222 40% 8%;
     --primary-glow: 158 90% 65%;
 
@@ -26,10 +77,10 @@
     --muted: 222 20% 15%;
     --muted-foreground: 220 10% 60%;
 
-    --accent: 14 90% 65%;            /* coral */
+    --accent: 14 90% 65%;
     --accent-foreground: 222 40% 8%;
 
-    --warning: 40 95% 60%;           /* amber */
+    --warning: 40 95% 60%;
     --warning-foreground: 222 40% 8%;
 
     --success: 158 75% 55%;
@@ -42,8 +93,6 @@
     --input: 222 20% 16%;
     --ring: 158 75% 55%;
 
-    --radius: 1rem;
-
     --gradient-primary: linear-gradient(135deg, hsl(158 75% 55%), hsl(180 75% 55%));
     --gradient-accent: linear-gradient(135deg, hsl(14 90% 65%), hsl(340 85% 65%));
     --gradient-surface: linear-gradient(180deg, hsl(222 28% 11%), hsl(222 30% 8%));
@@ -51,18 +100,6 @@
 
     --shadow-card: 0 10px 40px -10px hsl(222 50% 2% / 0.6), inset 0 1px 0 0 hsl(180 15% 95% / 0.04);
     --shadow-glow: 0 0 60px -10px hsl(158 90% 55% / 0.4);
-
-    --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
-
-
-    --sidebar-background: 222 28% 10%;
-    --sidebar-foreground: 180 15% 95%;
-    --sidebar-primary: 158 75% 55%;
-    --sidebar-primary-foreground: 222 40% 8%;
-    --sidebar-accent: 14 90% 65%;
-    --sidebar-accent-foreground: 222 40% 8%;
---sidebar-border: 222 20% 18%;
---sidebar-ring: 158 75% 55%;
   }
 }
 

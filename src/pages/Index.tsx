@@ -7,8 +7,11 @@ import { IncomeForm } from "@/components/finance/IncomeForm";
 import { ExpenseForm } from "@/components/finance/ExpenseForm";
 import { RuleEditor } from "@/components/finance/RuleEditor";
 import { Button } from "@/components/ui/button";
-import { Sparkles, RotateCcw } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Sparkles, RotateCcw, LayoutDashboard, TrendingUp } from "lucide-react";
 import { formatRuleLabel } from "@/lib/finance";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import Investments from "./Investments";
 
 const Index = () => {
   const f = useFinance();
@@ -30,44 +33,49 @@ const Index = () => {
               Cadastre receitas, registre despesas e acompanhe em tempo real seu dinheiro sendo direcionado para funções diferentes.
             </p>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              if (confirm("Limpar todos os dados?")) f.reset();
-            }}
-            className="shrink-0"
-          >
-            <RotateCcw className="mr-1.5 h-3.5 w-3.5" /> Resetar
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                if (confirm("Limpar todos os dados?")) f.reset();
+              }}
+              className="shrink-0"
+            >
+              <RotateCcw className="mr-1.5 h-3.5 w-3.5" /> Resetar
+            </Button>
+          </div>
         </header>
 
-        {/* Summary */}
-        <section className="mb-6">
-          <SummaryCards income={f.totalIncome} expenses={f.totalExpenses} balance={f.balance} />
-        </section>
+        <Tabs defaultValue="dashboard" className="w-full">
+          <TabsList className="mb-6 grid w-full max-w-md grid-cols-2">
+            <TabsTrigger value="dashboard" className="gap-1.5">
+              <LayoutDashboard className="h-3.5 w-3.5" /> Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="investments" className="gap-1.5">
+              <TrendingUp className="h-3.5 w-3.5" /> Investimentos
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Rule breakdown */}
-        <section className="mb-8">
-          <RuleBreakdown totalIncome={f.totalIncome} totalsByCategory={f.totalsByCategory} rule={f.rule} />
-        </section>
+          <TabsContent value="dashboard" className="space-y-8">
+            <SummaryCards income={f.totalIncome} expenses={f.totalExpenses} balance={f.balance} />
+            <RuleBreakdown totalIncome={f.totalIncome} totalsByCategory={f.totalsByCategory} rule={f.rule} />
+            <div className="grid gap-5 lg:grid-cols-2">
+              <RuleEditor rule={f.rule} onChange={f.setRule} onReset={f.resetRule} />
+              <SpendingPie totalsByCategory={f.totalsByCategory} />
+            </div>
+            <PlannedVsActualBar totalIncome={f.totalIncome} totalsByCategory={f.totalsByCategory} rule={f.rule} />
+            <div className="grid gap-5 lg:grid-cols-2">
+              <IncomeForm incomes={f.incomes} onAdd={f.addIncome} onRemove={f.removeIncome} />
+              <ExpenseForm expenses={f.expenses} onAdd={f.addExpense} onRemove={f.removeExpense} />
+            </div>
+          </TabsContent>
 
-        {/* Rule editor + Pie */}
-        <section className="mb-8 grid gap-5 lg:grid-cols-2">
-          <RuleEditor rule={f.rule} onChange={f.setRule} onReset={f.resetRule} />
-          <SpendingPie totalsByCategory={f.totalsByCategory} />
-        </section>
-
-        {/* Charts */}
-        <section className="mb-8">
-          <PlannedVsActualBar totalIncome={f.totalIncome} totalsByCategory={f.totalsByCategory} rule={f.rule} />
-        </section>
-
-        {/* Forms */}
-        <section className="grid gap-5 lg:grid-cols-2">
-          <IncomeForm incomes={f.incomes} onAdd={f.addIncome} onRemove={f.removeIncome} />
-          <ExpenseForm expenses={f.expenses} onAdd={f.addExpense} onRemove={f.removeExpense} />
-        </section>
+          <TabsContent value="investments">
+            <Investments />
+          </TabsContent>
+        </Tabs>
 
         <footer className="mt-12 text-center text-xs text-muted-foreground">
           © 2026 Guilherme Araújo
