@@ -6,9 +6,10 @@ import { PlannedVsActualBar } from "@/components/finance/PlannedVsActualBar";
 import { IncomeForm } from "@/components/finance/IncomeForm";
 import { ExpenseForm } from "@/components/finance/ExpenseForm";
 import { RuleEditor } from "@/components/finance/RuleEditor";
+import { MonthlyHistory } from "@/components/finance/MonthlyHistory";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Sparkles, RotateCcw, LayoutDashboard, TrendingUp } from "lucide-react";
+import { Sparkles, RotateCcw, LayoutDashboard, TrendingUp, History } from "lucide-react";
 import { formatRuleLabel } from "@/lib/finance";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import Investments from "./Investments";
@@ -49,12 +50,15 @@ const Index = () => {
         </header>
 
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="mb-6 grid w-full max-w-md grid-cols-2">
+          <TabsList className="mb-6 grid w-full max-w-lg grid-cols-3">
             <TabsTrigger value="dashboard" className="gap-1.5">
               <LayoutDashboard className="h-3.5 w-3.5" /> Dashboard
             </TabsTrigger>
             <TabsTrigger value="investments" className="gap-1.5">
               <TrendingUp className="h-3.5 w-3.5" /> Investimentos
+            </TabsTrigger>
+            <TabsTrigger value="history" className="gap-1.5">
+              <History className="h-3.5 w-3.5" /> Histórico
             </TabsTrigger>
           </TabsList>
 
@@ -74,6 +78,10 @@ const Index = () => {
 
           <TabsContent value="investments">
             <Investments />
+          </TabsContent>
+
+          <TabsContent value="history">
+            <MonthlyHistory expenses={f.expenses} incomes={f.incomes} />
           </TabsContent>
         </Tabs>
 
