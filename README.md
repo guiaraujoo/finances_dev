@@ -39,19 +39,16 @@ O usuário poderá cadastrar sua renda mensal e registrar suas despesas, que ser
 - **Frontend:**
   - HTML5
   - CSS3
-  - JavaScript (ou React)
+  - JavaScript
+  - React
+  - TypeScript
 
 - **Bibliotecas de Gráficos:**
   - Chart.js  
-  - ou Recharts
-
-- **Backend (opcional):**
-  - Node.js  
-  - ou Python
+  
 
 - **Armazenamento:**
   - LocalStorage  
-  - ou banco de dados (MongoDB, SQLite)
 
 ---
 
