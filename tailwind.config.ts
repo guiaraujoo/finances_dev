@@ -63,11 +63,18 @@ export default {
           foreground: "hsl(var(--warning-foreground))",
         },
         success: "hsl(var(--success))",
+        inflow: "hsl(var(--inflow))",
+        outflow: "hsl(var(--outflow))",
+        ink: {
+          DEFAULT: "hsl(var(--ink))",
+          foreground: "hsl(var(--ink-foreground))",
+          muted: "hsl(var(--ink-muted))",
+        },
         danger: "hsl(var(--danger))",
       },
       fontFamily: {
-        display: ['Space Grotesk', 'system-ui', 'sans-serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Bricolage Grotesque', 'system-ui', 'sans-serif'],
+        sans: ['Geist', 'Inter', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',

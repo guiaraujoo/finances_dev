@@ -26,8 +26,8 @@ export function InvestmentSummary({ result }: Props) {
             <div className={`mb-3 inline-flex rounded-md p-2 ${c.bg}`}>
               <c.icon className={`h-4 w-4 ${c.accent}`} />
             </div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">{c.label}</p>
-            <p className="mt-1 font-display text-2xl font-bold">{c.value}</p>
+            <p className="text-sm text-muted-foreground">{c.label}</p>
+            <p className="mt-1 font-display text-2xl font-semibold tabular-nums">{c.value}</p>
           </Card>
         ))}
       </div>

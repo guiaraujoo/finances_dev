@@ -46,7 +46,7 @@ export function InvestmentForm({ input, onChange, type, onTypeChange, onApplySce
       </div>
 
       <div className="mb-5">
-        <Label className="mb-2 block text-xs uppercase tracking-wide text-muted-foreground">
+        <Label className="mb-2 block text-xs text-muted-foreground">
           Tipo de investimento
         </Label>
         <Tabs value={type} onValueChange={(v) => handleType(v as InvestmentType)}>
@@ -139,7 +139,7 @@ export function InvestmentForm({ input, onChange, type, onTypeChange, onApplySce
       <div className="mt-6 border-t border-border pt-5">
         <div className="mb-3 flex items-center gap-2">
           <Zap className="h-3.5 w-3.5 text-warning" />
-          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          <span className="text-xs font-medium text-muted-foreground">
             Cenários rápidos
           </span>
         </div>

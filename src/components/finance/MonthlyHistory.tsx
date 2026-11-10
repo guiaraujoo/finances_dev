@@ -2,8 +2,11 @@ import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CalendarDays, TrendingDown, TrendingUp, Wallet, Inbox } from "lucide-react";
-import type { Expense, Income } from "@/lib/finance";
+import { Button } from "@/components/ui/button";
+import { CalendarDays, Download, TrendingDown, TrendingUp, Wallet, Inbox } from "lucide-react";
+import { CATEGORY_META, TAG_META, formatBRL, formatDate, formatPct, toneClass, variationPct, type Expense, type Income } from "@/lib/finance";
+import { tagOf } from "@/lib/categorize";
+import { buildCSV, downloadCSV } from "@/lib/export";
 import { buildMonthlySummaries } from "@/lib/history";
 import {
   Bar,
@@ -20,14 +23,19 @@ interface MonthlyHistoryProps {
   incomes: Income[];
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  fixed: "Fixo",
-  variable: "Variável",
-  investment: "Investimento",
-};
 
-const currency = (value: number) =>
-  value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const currency = formatBRL;
+
+// Variação em relação ao mês anterior; para gastos, subir é ruim (cor invertida).
+function Variation({ value, inverse = false }: { value: number | null; inverse?: boolean }) {
+  if (value === null) return <p className="mt-1 text-xs text-muted-foreground">Sem mês anterior para comparar</p>;
+  const bad = inverse ? value > 0 : value < 0;
+  return (
+    <p className={`mt-1 text-xs ${value === 0 ? "text-muted-foreground" : bad ? "text-danger" : "text-primary"}`}>
+      {formatPct(value)} vs. mês anterior
+    </p>
+  );
+}
 
 export function MonthlyHistory({ expenses, incomes }: MonthlyHistoryProps) {
   const summaries = useMemo(
@@ -37,6 +45,13 @@ export function MonthlyHistory({ expenses, incomes }: MonthlyHistoryProps) {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
   const selected = summaries.find((s) => s.key === selectedKey) ?? summaries[0];
+  // summaries vem do mais recente para o mais antigo: o anterior é o índice seguinte.
+  const previous = selected ? summaries[summaries.indexOf(selected) + 1] : undefined;
+
+  const handleExport = () => {
+    if (!selected) return;
+    downloadCSV(`financas-${selected.key}.csv`, buildCSV(selected.expenses, selected.incomes));
+  };
 
   const chartData = useMemo(
     () =>
@@ -66,12 +81,14 @@ export function MonthlyHistory({ expenses, incomes }: MonthlyHistoryProps) {
   return (
     <div className="space-y-5">
       {/* Seletor de mês */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Selecionar mês">
         {summaries.map((s) => (
           <button
             key={s.key}
+            type="button"
+            aria-pressed={s.key === selected?.key}
             onClick={() => setSelectedKey(s.key)}
-            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${
+            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               s.key === selected?.key
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-secondary/60 text-muted-foreground hover:bg-secondary"
@@ -80,6 +97,9 @@ export function MonthlyHistory({ expenses, incomes }: MonthlyHistoryProps) {
             {s.label}
           </button>
         ))}
+        <Button type="button" variant="outline" size="sm" onClick={handleExport} className="ml-auto">
+          <Download className="mr-1.5 h-3.5 w-3.5" /> Exportar CSV
+        </Button>
       </div>
 
       {selected && (
@@ -91,12 +111,13 @@ export function MonthlyHistory({ expenses, incomes }: MonthlyHistoryProps) {
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Gasto no mês
                 </CardTitle>
-                <TrendingDown className="h-4 w-4 text-destructive" />
+                <TrendingDown className="h-4 w-4 text-outflow" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
+                <div className="text-2xl font-bold tabular-nums">
                   {currency(selected.totalExpenses)}
                 </div>
+                <Variation value={previous ? variationPct(selected.totalExpenses, previous.totalExpenses) : null} inverse />
               </CardContent>
             </Card>
             <Card>
@@ -104,12 +125,13 @@ export function MonthlyHistory({ expenses, incomes }: MonthlyHistoryProps) {
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   Receita no mês
                 </CardTitle>
-                <TrendingUp className="h-4 w-4 text-primary" />
+                <TrendingUp className="h-4 w-4 text-inflow" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">
+                <div className="text-2xl font-bold tabular-nums">
                   {currency(selected.totalIncome)}
                 </div>
+                <Variation value={previous ? variationPct(selected.totalIncome, previous.totalIncome) : null} />
               </CardContent>
             </Card>
             <Card>
@@ -121,12 +143,11 @@ export function MonthlyHistory({ expenses, incomes }: MonthlyHistoryProps) {
               </CardHeader>
               <CardContent>
                 <div
-                  className={`text-2xl font-bold ${
-                    selected.balance < 0 ? "text-destructive" : ""
-                  }`}
+                  className={`text-2xl font-bold tabular-nums ${toneClass(selected.balance)}`}
                 >
                   {currency(selected.balance)}
                 </div>
+                <Variation value={previous ? variationPct(selected.balance, previous.balance) : null} />
               </CardContent>
             </Card>
           </div>
@@ -146,7 +167,7 @@ export function MonthlyHistory({ expenses, incomes }: MonthlyHistoryProps) {
                   >
                 ).map((cat) => (
                   <Badge key={cat} variant="secondary" className="text-xs">
-                    {CATEGORY_LABELS[cat] ?? cat}:{" "}
+                    {CATEGORY_META[cat].label}:{" "}
                     {currency(selected.totalsByCategory[cat])}
                   </Badge>
                 ))}
@@ -169,11 +190,10 @@ export function MonthlyHistory({ expenses, incomes }: MonthlyHistoryProps) {
                           <div>
                             <p className="font-medium">{e.description}</p>
                             <p className="text-xs text-muted-foreground">
-                              {CATEGORY_LABELS[e.category] ?? e.category} •{" "}
-                              {new Date(e.createdAt).toLocaleDateString("pt-BR")}
+                              {TAG_META[tagOf(e)].label}, {formatDate(e.createdAt)}
                             </p>
                           </div>
-                          <span className="font-semibold">{currency(e.amount)}</span>
+                          <span className="font-semibold tabular-nums">−{currency(e.amount)}</span>
                         </div>
                       ))
                   )}
@@ -196,10 +216,16 @@ export function MonthlyHistory({ expenses, incomes }: MonthlyHistoryProps) {
                     <YAxis fontSize={12} tickLine={false} axisLine={false} width={40} />
                     <Tooltip
                       formatter={(value: number) => currency(value)}
-                      contentStyle={{ borderRadius: 8, fontSize: 12 }}
+                      contentStyle={{
+                        background: "hsl(var(--popover))",
+                        color: "hsl(var(--popover-foreground))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: 8,
+                        fontSize: 12,
+                      }}
                     />
-                    <Bar dataKey="gastos" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="receitas" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="receitas" name="Receitas" fill="hsl(var(--inflow))" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="gastos" name="Gastos" fill="hsl(var(--outflow))" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>

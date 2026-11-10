@@ -49,7 +49,7 @@ export function RuleEditor({ rule, onChange, onReset }: Props) {
           <h3 className="font-display text-lg font-semibold">Personalize sua regra</h3>
         </div>
         <span
-          className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium ${
+          className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${
             valid ? "bg-secondary text-primary" : "bg-secondary text-danger"
           }`}
         >
@@ -97,7 +97,7 @@ export function RuleEditor({ rule, onChange, onReset }: Props) {
       </div>
 
       <div className="mt-5">
-        <p className="mb-2 text-[10px] uppercase tracking-widest text-muted-foreground">
+        <p className="mb-2 text-xs text-muted-foreground">
           Modelos rápidos
         </p>
         <div className="flex flex-wrap gap-2">

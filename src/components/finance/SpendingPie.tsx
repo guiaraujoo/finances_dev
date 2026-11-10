@@ -26,7 +26,7 @@ export function SpendingPie({ totalsByCategory }: Props) {
       <div className="relative mt-4 h-72">
         {data.length === 0 ? (
           <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-            Adicione despesas para ver o gráfico
+            Registre despesas para ver como elas se dividem.
           </div>
         ) : (
           <>
@@ -47,7 +47,8 @@ export function SpendingPie({ totalsByCategory }: Props) {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    background: "hsl(0, 0%, 66%)",
+                    background: "hsl(var(--popover))",
+                    color: "hsl(var(--popover-foreground))",
                     border: "1px solid hsl(var(--border))",
                     borderRadius: 12,
                     fontSize: 12,
@@ -57,23 +58,23 @@ export function SpendingPie({ totalsByCategory }: Props) {
               </PieChart>
             </ResponsiveContainer>
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-xs uppercase tracking-widest text-muted-foreground">Total</span>
+              <span className="text-xs text-muted-foreground">Total</span>
               <span className="font-display text-2xl font-semibold">{formatBRL(total)}</span>
             </div>
           </>
         )}
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+      <div className="mt-4 grid grid-cols-1 gap-2 text-center sm:grid-cols-3">
         {(Object.keys(CATEGORY_META) as Category[]).map((cat) => (
           <div key={cat} className="rounded-lg bg-secondary/50 p-2">
             <div className="flex items-center justify-center gap-1.5">
               <span className="h-2 w-2 rounded-full" style={{ background: CATEGORY_META[cat].color }} />
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 {CATEGORY_META[cat].label}
               </span>
             </div>
-            <p className="mt-1 text-xs font-medium">{formatBRL(totalsByCategory[cat])}</p>
+            <p className="mt-1 text-sm font-medium tabular-nums">{formatBRL(totalsByCategory[cat])}</p>
           </div>
         ))}
       </div>
