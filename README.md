@@ -125,22 +125,7 @@ Defina um objetivo e o app calcula quanto você precisa guardar por mês para ch
 
 ## 🚀 Rodando na sua máquina
 
-> [!NOTE]
-> Você vai precisar do **Node.js 18 ou superior**.
-
-```bash
-# 1. Clone o repositório
-git clone https://github.com/guiaraujoo/finances_dev.git
-cd finances_dev
-
-# 2. Instale as dependências
-npm install
-
-# 3. Suba o servidor de desenvolvimento
-npm run dev
-```
-
-Pronto! Abra **http://localhost:8080** e comece a usar. 🎉
+Acesso o link **https://finances-dev.vercel.app/** e comece a usar. 🎉
 
 <details>
 <summary><b>🛠️ Todos os comandos</b></summary>
